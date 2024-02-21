@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  celery:
+    container_name: celery
+    restart: on-failure
+    image:  docker-registry.setera.com/my-backend-celery:${BACKENDTAG}
+    build:
+      context: ../../my-setera-BACKEND
+      dockerfile: Dockerfile.prod
+    platform: linux/amd64
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+    command: celery  -A my_backend worker -l info
+    depends_on:
+      - redis
+      - backend
+    env_file:
+      - ./.env
+    networks:
+      setera-nw:
+
+  celery-beat:
+    container_name: celery_beat
+    image: docker-registry.setera.com/my-backend-celery-beat:${BACKENDTAG}
+    build:
+      context: ../../my-setera-BACKEND
+      dockerfile: Dockerfile.prod
+    platform: linux/amd64
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+    command: celery -A my_backend beat -l info
+    depends_on:
+      - redis
+      - backend
+    env_file:
+      - ./.env
+    networks:
+      setera-nw:

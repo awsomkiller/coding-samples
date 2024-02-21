@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  frontend:
+    image: docker-registry.setera.com/my-ui:${FRONTENDTAG} 
+    container_name: frontend
+    build:
+      context: ../../my-setera-UI
+      dockerfile: Dockerfile.prod
+    platform: linux/amd64
+    ports:
+      - "3000:3000" 
+    env_file:
+      - ./.env

@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  frontend:
+    container_name: frontend
+    image: docker-registry.setera.com/my-ui
+    ports:
+      - "3000:3000"
+    environment:
+      # - "REACT_APP_BASE_URL=https://xyz.weuselinux.com/api"
+      # - "REACT_APP_PUBLIC_URL=http://localhost:3000"
+      # - "REACT_APP_API_URL=https://xyz.weuselinux.com/api"
+      - "REACT_APP_BASE_URL=https://my-dev.setera.com/api"
+      - "REACT_APP_PUBLIC_URL=http://localhost:3000"
+      - "REACT_APP_API_URL=https://my-dev.setera.com/api"
+    networks:
+      setera-nw:
+    stdin_open: true
+    # volumes:
+    #   - ../my-setera-UI:/my-app
+    command: npm run start

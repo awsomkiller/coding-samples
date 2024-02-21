@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  backend:
+    image: docker-registry.setera.com/backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      CELERY_BROKER_URL: "redis://redis:6379/0"
+      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+    depends_on:
+      - db
+    networks:
+      setera-nw:
+    volumes:
+      - static_files:/my_backend/my_backend/staticfiles
+      - ../../my-setera-BACKEND:/my_backend
+    env_file:
+      - ./.env
+   
+    command: sh -c "ls && python my_backend/manage.py makemigrations  && python my_backend/manage.py migrate && python my_backend/manage.py loaddata group.json && python my_backend/manage.py loaddata new-customer.json && python my_backend/manage.py loaddata role.json && python my_backend/manage.py loaddata new-sim.json && python my_backend/manage.py loaddata new-data.json && python my_backend/manage.py loaddata new-subscription.json && python my_backend/manage.py loaddata new-serviceid.json && python my_backend/manage.py loaddata new-provnot.json && python my_backend/manage.py runserver 0.0.0.0:8000"

@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  nginx:
+    image: docker-registry.setera.com/my-nginx:${NGINXTAG}
+    container_name: my-nginx
+    build:
+      context: ./infra/nginx.prod
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./infra/nginx.prod/default.conf:/etc/nginx/conf.d/default.conf
+      - ./infra/nginx.prod/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./infra/nginx.prod/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+    environment:
+      SETERA_HOST: ${HOSTNAME}
+    depends_on:
+      - backend
+    env_file:
+      - ./.env
+    networks:
+      setera-nw:
+
+volumes:
+  static_files:

@@ -1,0 +1,18 @@
+version: "3.8"
+
+networks:
+  setera-nw:
+  # setera-static-nw:
+  #   ipam:
+  #     config:
+  #       - subnet: 172.16.0.0/23 # In order to specify static IPs, we must explicitly declare subnet.
+
+
+volumes:
+  static_files:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${PWD}/data/staticfiles
+

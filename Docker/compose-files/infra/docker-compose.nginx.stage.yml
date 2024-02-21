@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./compose-files/infra/nginx.stage/default.conf:/etc/nginx/conf.d/default.conf
+      - ./compose-files/infra/nginx.stage/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - ./compose-files/infra/nginx.stage/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+      - static_files:/app/static:ro
+    environment:
+      SETERA_HOST: "my-dev.setera.com"
+    depends_on:
+      - backend
+      - frontend      
+    networks:
+      setera-nw:
+    env_file:
+      - ./.env
